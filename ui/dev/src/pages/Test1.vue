@@ -1,9 +1,6 @@
 <template>
   <q-page padding>
-    
-    <BuscarVenda />
-    
-    
+    <BuscarVenda :id-terminal="4" />
   </q-page>
 </template>
 

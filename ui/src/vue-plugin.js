@@ -1,4 +1,5 @@
 import BuscarVenda from "./components/BuscarVenda.vue";
+// import BuscarVenda from "./components/TestComponent.vue";
 
 const version = __UI_VERSION__;
 

@@ -4,6 +4,7 @@ const fse = require("fs-extra");
 const rollup = require("rollup");
 const uglify = require("uglify-js");
 const buble = require("@rollup/plugin-buble");
+const babel = require("@rollup/plugin-babel");
 const json = require("@rollup/plugin-json");
 const { nodeResolve } = require("@rollup/plugin-node-resolve");
 const replace = require("@rollup/plugin-replace");
@@ -11,7 +12,7 @@ const replace = require("@rollup/plugin-replace");
 const { version } = require("../package.json");
 
 const commonjs = require("@rollup/plugin-commonjs");
-const VuePlugin = require("rollup-plugin-vue");
+const vuePlugin = require("rollup-plugin-vue");
 
 const buildConf = require("./config");
 const buildUtils = require("./utils");
@@ -26,11 +27,13 @@ const rollupPlugins = [
   nodeResolve({
     extensions: [".js"],
     preferBuiltins: false,
+    browser: true,
   }),
   json(),
-  VuePlugin(/* VuePluginOptions */),
-  buble({
-    objectAssign: "Object.assign",
+  vuePlugin({ target: "browser" }),
+  babel({
+    exclude: "node_modules/**", // Transpile apenas o seu código, excluindo node_modules
+    presets: ["@babel/preset-env"],
   }),
 ];
 
