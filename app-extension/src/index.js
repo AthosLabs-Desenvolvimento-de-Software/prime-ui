@@ -7,7 +7,7 @@
 
 function extendConf(conf, api) {
   // register our boot file
-  conf.boot.push("~quasar-app-extension-prime-ui/src/boot/register.js");
+  conf.boot.push("~@lennonsbueno/quasar-app-extension-prime-ui/src/boot/register.js");
 
   if (api.hasWebpack) {
     // make sure app extension files & ui package gets transpiled
@@ -18,7 +18,7 @@ function extendConf(conf, api) {
   }
 
   // make sure the stylesheet goes through webpack to avoid SSR issues
-  conf.css.push("~quasar-ui-prime-ui/src/index.sass");
+  conf.css.push("~@lennonsbueno/quasar-ui-prime-ui/src/index.sass");
 }
 
 module.exports = function (api) {
@@ -34,7 +34,7 @@ module.exports = function (api) {
   }
 
   // Uncomment the line below if you provide a JSON API for your component
-  // api.registerDescribeApi('BuscarVenda', '~quasar-ui-prime-ui/src/components/BuscarVenda.json')
+  // api.registerDescribeApi('BuscarVenda', '~@lennonsbueno/quasar-ui-prime-ui/src/components/BuscarVenda.json')
 
   // We extend /quasar.conf.js
   api.extendQuasarConf(extendConf);
