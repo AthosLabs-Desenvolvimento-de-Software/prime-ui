@@ -5,6 +5,9 @@
   "author": "Lennon Bueno <lennonsbueno@gmail.com>",
   "license": "UNLICENSED",
   "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": ""

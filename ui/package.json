@@ -4,8 +4,9 @@
   "author": "Lennon Bueno <lennonsbueno@gmail.com>",
   "description": "Prime UI",
   "license": "UNLICENSED",
-  "module": "dist/index.esm.js",
-  "main": "dist/index.common.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "cd dev && yarn dev && cd .."
   },
