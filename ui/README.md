@@ -1,7 +1,7 @@
-# Component BuscarVenda
+# Library de componentes Prime UI
 
-[![npm](https://img.shields.io/npm/v/quasar-ui-prime-ui.svg?label=quasar-ui-prime-ui)](https://www.npmjs.com/package/quasar-ui-prime-ui)
-[![npm](https://img.shields.io/npm/dt/quasar-ui-prime-ui.svg)](https://www.npmjs.com/package/quasar-ui-prime-ui)
+[![npm](https://img.shields.io/npm/v/quasar-ui-prime-ui.svg?label=quasar-ui-prime-ui)](https://www.npmjs.com/package/@lennonsbueno/quasar-ui-prime-ui)
+[![npm](https://img.shields.io/npm/dt/quasar-ui-prime-ui.svg)](https://www.npmjs.com/package/@lennonsbueno/quasar-ui-prime-ui)
 
 **Compatible with Quasar UI v2 and Vue 3**.
 

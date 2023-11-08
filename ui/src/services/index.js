@@ -1,8 +1,7 @@
 import axios from "axios";
 import * as PdvService from "./pdvService";
 
-const env = JSON.parse(localStorage.getItem("ENV"));
-const API_URL = env.api;
+const API_URL = process.env.API
 
 const http = axios.create({
   baseURL: API_URL,

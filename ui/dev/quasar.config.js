@@ -3,6 +3,9 @@
 
 const path = require('path')
 const webpack = require('webpack')
+const dotEnv = require('dotenv')
+
+const parseEnv = dotEnv.config({ path: '.env' }).parsed
 
 module.exports = function (ctx) {
   return {
@@ -45,7 +48,7 @@ module.exports = function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash',
-
+      env: parseEnv,
       chainWebpack (chain) {
         chain.resolve.alias.merge({
           ui: path.resolve(__dirname, `../src/index.esm.js`)
@@ -60,7 +63,7 @@ module.exports = function (ctx) {
 
     devServer: {
       // port: 8080,
-      open: true // opens browser window automatically
+      open: false // opens browser window automatically
     },
 
     ssr: {
