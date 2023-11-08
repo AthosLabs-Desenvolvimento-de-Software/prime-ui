@@ -1,10 +1,12 @@
 import BuscarVenda from "./components/BuscarVenda.vue";
-// import BuscarVenda from "./components/TestComponent.vue";
+import TestComponent from "./components/QTestComponent.vue";
+import pkg from '../package.json'
 
-const version = __UI_VERSION__;
+const { version } = pkg
 
 function install(app) {
-  app.component(BuscarVenda.name, BuscarVenda);
+  app.component('BuscarVenda', BuscarVenda);
+  app.component('TestComponent', TestComponent);
 }
 
-export { version, BuscarVenda, install };
+export { version, TestComponent, install };

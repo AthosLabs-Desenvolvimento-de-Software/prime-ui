@@ -3,26 +3,6 @@
     class="bg-grey-4 text-black"
     :style="maximizedToggle ? 'padding-top: 40px' : ''"
   >
-    <q-bar
-      :class="
-        maximizedToggle
-          ? 'bg-orange-8 text-white fixed-top'
-          : 'bg-orange-8 text-white'
-      "
-    >
-      <div class="text-weight-bold">BUSCAR VENDA</div>
-
-      <q-space />
-
-      <q-btn dense flat icon="minimize" disable></q-btn>
-
-      <q-btn dense flat icon="crop_square" disable></q-btn>
-
-      <q-btn dense flat icon="close" @click="close">
-        <q-tooltip class="bg-white text-primary">FECHAR</q-tooltip>
-      </q-btn>
-    </q-bar>
-
     <q-card-section class="q-mx-xs q-my-xs q-pa-sm">
       <div class="flex column">
         <div

@@ -18,6 +18,8 @@ const buildConf = require("./config");
 const buildUtils = require("./utils");
 
 const rollupPlugins = [
+  vuePlugin(),
+  commonjs(),
   replace({
     preventAssignment: false,
     values: {
@@ -27,10 +29,11 @@ const rollupPlugins = [
   nodeResolve({
     extensions: [".js"],
     preferBuiltins: false,
-    browser: true,
   }),
   json(),
-  vuePlugin({ target: "browser" }),
+  // buble({
+  //   objectAssign: 'Object.assign'
+  // })
   babel({
     exclude: "node_modules/**", // Transpile apenas o seu código, excluindo node_modules
     presets: ["@babel/preset-env"],
@@ -74,7 +77,7 @@ const builds = [
         input: pathResolve("../src/index.umd.js"),
       },
       output: {
-        name: "camelCased",
+        name: "PrimeUi",
         file: pathResolve("../dist/index.umd.js"),
         format: "umd",
       },
