@@ -210,7 +210,7 @@
         <div
           class="bg-grey-9 q-pa-sm text-bold text-white text-center full-width q-mt-xl"
         >
-          VENDAS{{ idTerminal }}
+          VENDAS - terminal {{ idTerminal }}
         </div>
 
         <div v-if="sales.length > 0" class="q-mt-md">
@@ -307,6 +307,9 @@
               </td>
             </tbody>
           </q-markup-table>
+        </div>
+        <div v-else>
+          <p class="q-pa-md text-center">Nenhuma venda encontrada para o terminal selecionado.</p>
         </div>
         <div
           v-if="notSale"
