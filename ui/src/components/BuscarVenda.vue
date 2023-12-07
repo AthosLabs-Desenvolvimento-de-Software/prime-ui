@@ -297,7 +297,7 @@
                 {{ formatMoney(sale.total_value) }}
               </td>
               <td id="forma">
-                {{ sale.saleMethodPayment[0].methodPayment.tipo?.nome }}
+                {{ sale.saleMethodPayment[0]?.methodPayment?.tipo?.nome }}
                 <!-- TODO: se houver mais de um método de pagamento não vai aparecer -->
               </td>
               <td id="terminal">
