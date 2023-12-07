@@ -288,7 +288,7 @@
                 {{ formatMoney(sale.total_value) }}
               </td>
               <td id="porcentagem-desconto">
-                {{ sale.saleProduct.total_descount_value }}
+                {{ sale.saleProduct?.total_descount_value }}
               </td>
               <td id="troco">
                 <!-- TODO: achar troco -->
@@ -525,8 +525,8 @@ export default {
         let valueTotal = 0;
         for (let i = 0; i < value.length; i++) {
           valueTotalDescount =
-            valueTotalDescount + Number(value[i].total_descount_value);
-          valueTotal = valueTotal + Number(value.total_value);
+            valueTotalDescount + Number(value[i]?.total_descount_value);
+          valueTotal = valueTotal + Number(value?.total_value);
         }
         if (valueTotalDescount === 0) {
           return "0%";
