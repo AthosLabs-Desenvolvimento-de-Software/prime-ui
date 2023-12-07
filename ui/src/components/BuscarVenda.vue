@@ -210,7 +210,8 @@
         <div
           class="bg-grey-9 q-pa-sm text-bold text-white text-center full-width q-mt-xl"
         >
-          VENDAS - terminal {{ idTerminal }}
+          VENDAS 
+          <span v-if="idTerminal">- terminal {{ idTerminal }}</span>
         </div>
 
         <div v-if="sales.length > 0" class="q-mt-md">
@@ -383,7 +384,7 @@ export default {
     idTerminal: {
       type: Number,
       default: 0,
-      required: true,
+      required: false,
     },
   },
   data() {
@@ -441,7 +442,11 @@ export default {
   },
 
   mounted() {
-    this.getVendas();
+    if (this.idTerminal) {
+      this.getVendas();
+    } else {
+      this.syncSalesCloudDataBase()
+    }
   },
 
   methods: {
@@ -609,268 +614,14 @@ export default {
       }
     },
 
-    syncSalesCloudDataBase() {
-      const db = new Localbase("athosprime");
-      if (
-        this.customFilter.limit.value === null ||
-        this.customFilter.limit.value === ""
-      ) {
-        this.$q.notify({
-          message:
-            "INFORME CORRETAMENTE A QUANTIDADE DE VENDAS A SEREM EXIBIDAS",
-          color: "negative",
-        });
-        return;
+    async syncSalesCloudDataBase () {
+      const params = {
+        idTerminal: this.idTerminal
       }
-      if (this.date.from || this.date.to) {
-        if (this.date.from === null || this.date.to === null) {
-          this.$q.notify({
-            message: "INFORME A DATA CORRETAMENTE",
-            color: "negative",
-          });
-          return;
-        }
-      }
+      const response = await PdvService.sales(params)
 
-      if (this.dateNotFormatted.from && this.dateNotFormatted.to) {
-        this.customFilter.date.from = this.formatDateCurrentFrom(
-          this.date.from
-        );
-        this.customFilter.date.to = this.formatDateCurrentTo(this.date.to);
-      } else {
-        this.customFilter.date.from = null;
-        this.customFilter.date.to = null;
-      }
-
-      if (navigator.onLine) {
-        // O USUÁRIO SETÁ ONLINE. ACESSE O BANCO DE DADOS ONLINE
-        pdvSalesService.index(this.customFilter).then((response) => {
-          if (response.data.length) {
-            const data = response.data;
-            this.sales = data.map((sale) => {
-              let methodsPayments = "";
-              for (let i = 0; i < sale.saleMethodPayment.length; i++) {
-                methodsPayments +=
-                  sale.saleMethodPayment[i].methodPayment.tipo?.nome;
-                methodsPayments +=
-                  i === sale.saleMethodPayment.length - 1 ? " " : " - ";
-              }
-
-              return {
-                ...sale,
-                created_formatted: this.formatDateCreatedAt(sale.created_at),
-                created_formatted_time: this.formatTimeCreatedAt(
-                  sale.created_at
-                ),
-                sale_product_formatted: this.formatPorc(sale.saleProduct),
-                total_value_formatted: this.formatFinalValue(sale.total_value),
-                total_value_change_formatted: this.formatThing(
-                  sale.saleMethodPayment,
-                  sale.total_value
-                ),
-                amount_formatted: this.formatFinalValue(
-                  sale.total_descount_value
-                ),
-                method_payment_formatted: methodsPayments,
-                user_created_formatted: sale.userCreated
-                  ? sale.userCreated.funcionario?.nome.length > 35
-                    ? `${sale.userCreated.funcionario?.nome
-                        .substring(0, 35)
-                        .toUpperCase()}...`
-                    : sale.userCreated.funcionario?.nome.toUpperCase()
-                  : null,
-                client_formatted: sale.cliente
-                  ? sale.cliente?.nome_fantasia.length > 35
-                    ? `${sale.cliente?.nome_fantasia.substring(0, 35)}...`
-                    : sale.cliente?.nome_fantasia
-                  : null,
-              };
-            });
-            this.notSale = false;
-            if (this.date.from && this.date.from) {
-              this.customFilter.date.from = this.date.from;
-              this.customFilter.date.to = this.date.to;
-            }
-
-            if (this.sales.length > 0) {
-              this.currentRowIndex = 0;
-              this.selectedSalesProducts = this.sales[0].saleProduct;
-              this.notSale = false;
-            } else {
-              this.notSale = true;
-              this.selectedSalesProducts = [];
-            }
-          }
-        });
-      } else {
-        // O USUÁRIO SETÁ OFFLINE. ACESSE O BANCO DE DADOS OFFLINE
-        db.collection("sales")
-          .get()
-          .then((sales) => {
-            let dataFilterOffline = [];
-            const exceptions = ["type", "limit"];
-            const checkIfItIsNull = Object.entries(this.customFilter)
-              .filter(([chave, valor]) => !exceptions.includes(chave))
-              .every(([chave, valor]) => {
-                if (chave === "date") {
-                  return (
-                    (valor.from === null ||
-                      valor.from === "" ||
-                      valor.from === undefined) &&
-                    (valor.to === null ||
-                      valor.to === "" ||
-                      valor.to === undefined)
-                  );
-                }
-                if (chave === "paymentMethods") {
-                  return valor.length === 0;
-                } else {
-                  return valor.value === null || valor.value === "";
-                }
-              });
-
-            if (checkIfItIsNull) {
-              dataFilterOffline = sales;
-            } else {
-              dataFilterOffline = sales
-                .filter((item) => {
-                  let matchSalesman = true;
-                  let matchNumberSale = true;
-                  let matchClient = true;
-                  let matchDate = true;
-                  let matchMethodPayment = true;
-
-                  if (
-                    this.customFilter.salesman.value !== null &&
-                    this.customFilter.salesman.value !== ""
-                  ) {
-                    matchSalesman =
-                      item.userCreated.username &&
-                      item.userCreated.username
-                        .toLowerCase()
-                        .startsWith(
-                          this.customFilter.salesman.value.toLowerCase()
-                        );
-                  }
-                  if (
-                    this.customFilter.numberSale.value !== null &&
-                    this.customFilter.numberSale.value !== ""
-                  ) {
-                    matchNumberSale =
-                      item.codigo ===
-                      Number(this.customFilter.numberSale.value);
-                  }
-                  if (
-                    this.customFilter.client.value !== null &&
-                    this.customFilter.client.value !== ""
-                  ) {
-                    matchClient =
-                      item.cliente?.nome_fantasia &&
-                      item.cliente?.nome_fantasia
-                        .toLowerCase()
-                        .startsWith(
-                          this.customFilter.client.value.toLowerCase()
-                        );
-                  }
-                  if (
-                    this.customFilter.date.from !== null &&
-                    this.customFilter.date.from !== "" &&
-                    this.customFilter.date.from !== undefined &&
-                    this.customFilter.date.to !== null &&
-                    this.customFilter.date.to !== "" &&
-                    this.customFilter.date.to !== undefined
-                  ) {
-                    matchDate =
-                      new Date(item.created_at) >=
-                        new Date(this.customFilter.date.from) &&
-                      new Date(item.created_at) <=
-                        new Date(this.customFilter.date.to);
-                  }
-                  if (this.customFilter.paymentMethods.value.length !== 0) {
-                    for (
-                      let i = 0;
-                      i < this.customFilter.paymentMethods.value.length;
-                      i++
-                    ) {
-                      matchMethodPayment = item.saleMethodPayment.some(
-                        (method) =>
-                          method.methodPayment.tipo?.nome ===
-                          this.customFilter.paymentMethods.value[i]
-                      );
-                    }
-                  }
-                  if (
-                    item.saleMethodPayment.length === 0 &&
-                    this.customFilter.paymentMethods.value.length > 0
-                  ) {
-                    return false;
-                  }
-
-                  return (
-                    matchSalesman &&
-                    matchNumberSale &&
-                    matchClient &&
-                    matchDate &&
-                    matchMethodPayment
-                  );
-                })
-                .slice(0, this.customFilter.limit.value);
-            }
-
-            this.sales = dataFilterOffline.map((sale) => {
-              let methodsPayments = "";
-              for (let i = 0; i < sale.saleMethodPayment.length; i++) {
-                methodsPayments +=
-                  sale.saleMethodPayment[i].methodPayment.tipo?.nome;
-                methodsPayments +=
-                  i === sale.saleMethodPayment.length - 1 ? " " : " - ";
-              }
-
-              return {
-                ...sale,
-                created_formatted: this.formatDateCreatedAt(sale.created_at),
-                created_formatted_time: this.formatTimeCreatedAt(
-                  sale.created_at
-                ),
-                sale_product_formatted: this.formatPorc(sale.saleProduct),
-                total_value_formatted: this.formatFinalValue(sale.total_value),
-                total_value_change_formatted: this.formatThing(
-                  sale.saleMethodPayment,
-                  sale.total_value
-                ),
-                amount_formatted: this.formatFinalValue(
-                  sale.total_descount_value
-                ),
-                method_payment_formatted: methodsPayments,
-                user_created_formatted: sale.userCreated
-                  ? sale.userCreated.funcionario?.nome.length > 35
-                    ? `${sale.userCreated.funcionario?.nome
-                        .substring(0, 35)
-                        .toUpperCase()}...`
-                    : sale.userCreated.funcionario?.nome.toUpperCase()
-                  : null,
-                client_formatted: sale.cliente
-                  ? sale.cliente?.nome_fantasia.length > 35
-                    ? `${sale.cliente?.nome_fantasia.substring(0, 35)}...`
-                    : sale.cliente?.nome_fantasia
-                  : null,
-              };
-            });
-          });
-
-        if (this.sales.length >= 1) {
-          this.currentRowIndex = 0;
-          this.selectedSalesProducts = this.sales[0].saleProduct;
-          this.notSale = false;
-        } else {
-          this.notSale = true;
-          this.selectedSalesProducts = [];
-        }
-      }
+      this.sales = response.data
     },
-  },
-  computed: {
-    // ...mapState('carrinho', ['carrinho']),
-  },
+  }
 };
 </script>
