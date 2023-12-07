@@ -301,10 +301,10 @@
                 <!-- TODO: se houver mais de um método de pagamento não vai aparecer -->
               </td>
               <td id="terminal">
-                {{ sale.terminal.numero }} / {{ sale.terminal?.nome }}
+                {{ sale.terminal?.numero }} / {{ sale.terminal?.nome }}
               </td>
               <td id="filial">
-                {{ sale.terminal.empresa?.nome_fantasia }}
+                {{ sale.terminal?.empresa?.nome_fantasia }}
               </td>
             </tbody>
           </q-markup-table>

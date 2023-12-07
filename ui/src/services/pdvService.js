@@ -25,7 +25,6 @@ export const vendas = (terminalId) => {
 };
 
 export const sales = data => {
-  console.log(data)
   if (data) {
     return http.get('sales', {
       params: {
