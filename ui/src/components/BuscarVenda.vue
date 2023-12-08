@@ -66,7 +66,6 @@
               bg-color="white"
               v-model="date.from"
               label="PERÍODO DESDE"
-              mask="##/##/####"
               readonly
             >
               <template v-slot:append>
@@ -499,7 +498,7 @@ export default {
 
     formatDateCreatedAt(val) {
       if (val) {
-        const formattedDate = date.formatDate(val, "DD/MM/YYY");
+        const formattedDate = date.formatDate(val, "DD/MM/YYYY");
         return formattedDate;
       }
     },
@@ -614,9 +613,21 @@ export default {
       }
     },
 
+    formatarData(input) {
+      if (input !== null) {
+        const partes = input.split('/');
+
+        const dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+
+        return dataFormatada;
+      }
+    },
+
     async syncSalesCloudDataBase () {
       const params = {
-        idTerminal: this.idTerminal
+        idTerminal: this.idTerminal,
+        startIn: this.formatarData(this.date.from),
+        endIn: this.formatarData(this.date.to),
       }
       const response = await PdvService.sales(params)
 

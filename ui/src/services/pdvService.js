@@ -24,18 +24,10 @@ export const vendas = (terminalId) => {
   return http.get(`pdv/vendas?terminal_id=${terminalId}`);
 };
 
-export const sales = data => {
-  if (data) {
+export const sales = params => {
+  if (params) {
     return http.get('sales', {
-      params: {
-        terminal_id: data?.idTerminal,
-        search: data?.filter || '',
-        page: data?.pagination?.page || 1,
-        rowsPerPage: data?.pagination?.rowsPerPage,
-        sortBy: data?.pagination?.sortBy || '',
-        descending: data?.pagination?.descending || false,
-        exactBy: data?.exactBy || ''
-      }
+      params: { ...params }
     })
   } else {
     return http.get('sales')
