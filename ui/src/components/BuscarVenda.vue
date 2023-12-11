@@ -21,6 +21,7 @@
               v-model="customFilter.numberCoupon.value"
               label="N° DO CUPOM"
               mask="####################"
+              disable
             />
           </div>
 
@@ -44,6 +45,7 @@
               bg-color="white"
               v-model="customFilter.client.value"
               label="CLIENTE"
+              disable
             />
           </div>
 
@@ -55,6 +57,7 @@
               bg-color="white"
               v-model="customFilter.salesman.value"
               label="VENDEDOR"
+              disable
             />
           </div>
 
@@ -118,6 +121,7 @@
               options-selected-class="text-orange"
               multiple
               color="orange"
+              disable
             >
               <template v-slot:no-option>
                 <q-item>
@@ -628,6 +632,8 @@ export default {
         idTerminal: this.idTerminal,
         startIn: this.formatarData(this.date.from),
         endIn: this.formatarData(this.date.to),
+        limit: this.customFilter?.limit?.value,
+        idSale: this.customFilter.numberSale.value
       }
       const response = await PdvService.sales(params)
 
