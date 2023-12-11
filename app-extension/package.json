@@ -15,7 +15,7 @@
   "bugs": "",
   "homepage": "",
   "dependencies": {
-    "@lennonsbueno/quasar-ui-prime-ui": "^0.0.8"
+    "@lennonsbueno/quasar-ui-prime-ui": "^0.0.9"
   },
   "engines": {
     "node": ">= 8.9.0",
