@@ -1,6 +1,6 @@
 {
   "name": "@lennonsbueno/quasar-app-extension-prime-ui",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Extensão para componentes de ui do prime",
   "author": "Lennon Bueno <lennonsbueno@gmail.com>",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
   "bugs": "",
   "homepage": "",
   "dependencies": {
-    "@lennonsbueno/quasar-ui-prime-ui": "^0.0.9"
+    "@lennonsbueno/quasar-ui-prime-ui": "^0.1.0"
   },
   "engines": {
     "node": ">= 8.9.0",
