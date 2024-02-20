@@ -120,8 +120,10 @@
               label="FORMAS DE PAGAMENTO"
               options-selected-class="text-orange"
               multiple
+              emit-value
+              map-options
               color="orange"
-              disable
+              :disable="!paymentMethodsOptions.length"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -141,7 +143,7 @@
               bg-color="white"
               v-model="customFilter.limit.value"
               label="LIMITE DE VENDAS EXIBIDAS"
-              mask="###"
+              mask="####"
             />
           </div>
 
@@ -394,14 +396,7 @@ export default {
     return {
       currentRowIndex: 0,
       inputDate: null,
-      paymentMethodsOptions: [
-        "DINHEIRO",
-        "CARTÃO",
-        "PIX",
-        "A PRAZO / CREDIÁRIO",
-        "CHEQUE",
-        "BOLETO",
-      ],
+      paymentMethodsOptions: [],
       sales: [],
       notSale: false,
       selectedSalesProducts: {},
@@ -434,7 +429,7 @@ export default {
           value: [],
         },
         limit: {
-          value: 15,
+          value: 1000,
         },
         type: {
           value: 1,
@@ -450,6 +445,19 @@ export default {
     } else {
       this.syncSalesCloudDataBase()
     }
+
+    const tiposPagamentos = JSON.parse(localStorage.getItem('TIPOS_PAGAMENTOS'))
+
+    if (tiposPagamentos && tiposPagamentos?.data?.length) {
+      this.paymentMethodsOptions = tiposPagamentos.data.map((e) => {
+        return {
+          label: e.nome,
+          value: e.id
+        }
+      })
+    }
+
+    console.log(tiposPagamentos)
   },
 
   methods: {
@@ -633,7 +641,8 @@ export default {
         startIn: this.formatarData(this.date.from),
         endIn: this.formatarData(this.date.to),
         limit: this.customFilter?.limit?.value,
-        idSale: this.customFilter.numberSale.value
+        idSale: this.customFilter.numberSale.value,
+        paymentMethods: this.customFilter.paymentMethods.value,
       }
       const response = await PdvService.sales(params)
 
