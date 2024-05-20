@@ -275,7 +275,7 @@
                 <!-- TODO: ? -->
               </td>
               <td id="cliente">
-                {{ sale?.cliente?.razao_social }}
+                {{ sale?.cliente?.nome_fantasia }}
               </td>
               <td id="vendedor">
                 {{ sale.vendedor?.nome }}
