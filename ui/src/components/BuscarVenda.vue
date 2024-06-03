@@ -467,7 +467,7 @@ export default {
 
   methods: {
     async getVendas() {
-      const response = await PdvService.vendas(this.idTerminal);
+      const response = await PdvService.vendas(this.idTerminal, this.type);
 
       this.sales = response.data;
     },

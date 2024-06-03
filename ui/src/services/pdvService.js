@@ -20,8 +20,8 @@ export const vincular = (data) => {
   });
 };
 
-export const vendas = (terminalId) => {
-  return http.get(`pdv/vendas?terminal_id=${terminalId}`);
+export const vendas = (terminalId, type) => {
+  return http.get(`pdv/vendas?terminal_id=${terminalId}&type=${type}`);
 };
 
 export const sales = params => {
