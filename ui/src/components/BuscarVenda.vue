@@ -391,6 +391,11 @@ export default {
       default: 0,
       required: false,
     },
+    type: {
+      type: Number,
+      default: 1,
+      required: false
+    }
   },
   data() {
     return {
@@ -643,6 +648,7 @@ export default {
         limit: this.customFilter?.limit?.value,
         idSale: this.customFilter.numberSale.value,
         paymentMethods: this.customFilter.paymentMethods.value,
+        type: this.type
       }
       const response = await PdvService.sales(params)
 
