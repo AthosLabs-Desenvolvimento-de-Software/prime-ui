@@ -266,7 +266,7 @@
                 />
               </td>
               <td id="numero-de-venda">
-                {{ sale.codigo }}
+                {{ sale.code || 'N/A' }}
               </td>
               <td id="coo">
                 <!-- TODO: ? -->
