@@ -9,7 +9,7 @@
           class="bg-grey-9 q-pa-sm text-bold text-white full-width q-mb-sm"
           style="border-radius: 0.2rem"
         >
-          BUSCAR VENDA POR:
+          BUSCAR <span class="text-uppercase">{{tipo}}</span>
         </div>
         <div class="bg-transparent q-pa-sm flex row">
           <div class="col-12 col-md-3 q-pa-xs">
@@ -32,7 +32,7 @@
               dense
               bg-color="white"
               v-model="customFilter.numberSale.value"
-              label="N° DA VENDA"
+              :label='`N° ${tipo.toUpperCase()}`'
               mask="####################"
             />
           </div>
@@ -142,7 +142,7 @@
               dense
               bg-color="white"
               v-model="customFilter.limit.value"
-              label="LIMITE DE VENDAS EXIBIDAS"
+              :label='`LIMITE DE ${tipo.toUpperCase()}S EXIBIDAS`'
               mask="####"
             />
           </div>
@@ -215,7 +215,7 @@
         <div
           class="bg-grey-9 q-pa-sm text-bold text-white text-center full-width q-mt-xl"
         >
-          VENDAS 
+          {{ tipo.toUpperCase() }}S 
           <span v-if="idTerminal">- terminal {{ idTerminal }}</span>
         </div>
 
@@ -229,10 +229,10 @@
             tabindex="0"
             ref="myTable"
           >
-            <thead class="bg-orange-9 text-white text-bold">
+            <thead :class="[type === 1 ? 'bg-orange-9' : 'bg-warning', 'text-white text-bold']">
               <tr>
                 <th></th>
-                <th>N° DE VENDA</th>
+                <th>N° {{ tipo.toUpperCase() }}</th>
                 <th>COO</th>
                 <th>COO CANC.</th>
                 <th>CLIENTE</th>
@@ -254,7 +254,7 @@
               v-for="(sale, index) in sales"
               :key="index"
               :class="[
-                { 'bg-orange-8 text-white': index === currentRowIndex },
+                { 'bg-grey-9 text-white': index === currentRowIndex },
                 'text-center cursor-pointer',
               ]"
               @click="selectedSale(sale, index)"
@@ -341,7 +341,7 @@
           style="width: 100%; max-height: 34.5vh"
         >
           <q-markup-table square separator="cell" dense>
-            <thead class="bg-orange-9 text-white text-bold">
+            <thead :class="[type === 1 ? 'bg-orange-9' : 'bg-warning', 'text-white text-bold']">
               <th>CÓDIGO</th>
               <th>TROCA</th>
               <th>DESCRIÇÃO DO PRODUTO</th>
@@ -461,8 +461,16 @@ export default {
         }
       })
     }
+  },
 
-    console.log(tiposPagamentos)
+  computed: {
+    tipo () {
+      if (this.type === 0) {
+        return 'orçamento'
+      } else {
+        return 'venda'
+      }
+    }
   },
 
   methods: {
