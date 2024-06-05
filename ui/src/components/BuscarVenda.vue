@@ -1,7 +1,7 @@
 <template>
   <q-card
+    flat
     class="bg-grey-4 text-black"
-    :style="maximizedToggle ? 'padding-top: 40px' : ''"
   >
     <q-card-section class="q-mx-xs q-my-xs q-pa-sm">
       <div class="flex column">
@@ -11,7 +11,7 @@
         >
           BUSCAR <span class="text-uppercase">{{tipo}}</span>
         </div>
-        <div class="bg-transparent q-pa-sm flex row">
+        <div class="bg-transparent flex row">
           <div class="col-12 col-md-3 q-pa-xs">
             <q-input
               standout="bg-orange-6 text-white"
@@ -340,7 +340,7 @@
           class="q-mt-md"
           style="width: 100%; max-height: 34.5vh"
         >
-          <q-markup-table square separator="cell" dense>
+          <q-markup-table square separator="cell" dense flat>
             <thead :class="[type === 1 ? 'bg-orange-9' : 'bg-warning', 'text-white text-bold']">
               <th>CÓDIGO</th>
               <th>TROCA</th>
@@ -351,28 +351,37 @@
             </thead>
 
             <tbody class="text-center">
-              <td>
-                {{
-                  selectedSalesProducts.product.barcode.length > 0
-                    ? selectedSalesProducts.product.barcode[0].barcode
-                    : null
-                }}
-              </td>
-              <td>
-                <!-- TODO: Campo troca - ? -->
-              </td>
-              <td>
-                {{
-                  `${selectedSalesProducts.product_description
-                    .substring(0, 15)
-                    .toUpperCase()}...`
-                }}
-              </td>
-              <td>{{ selectedSalesProducts.saled_quantity }}</td>
-              <td>{{ formatMoney(selectedSalesProducts.unitary_value) }}</td>
-              <td>{{ formatMoney(selectedSalesProducts.total_value) }}</td>
+              <tr v-for="saleProduct in  selectedSalesProducts">
+                <td>
+                  {{
+                    saleProduct.product.barcode.length > 0
+                      ? saleProduct.product.barcode[0].barcode
+                      : null
+                  }}
+                </td>
+                <td>
+                  <!-- TODO: Campo troca - ? -->
+                </td>
+                <td>
+                  {{
+                    `${saleProduct.product_description
+                      .substring(0, 15)
+                      .toUpperCase()}...`
+                  }}
+                </td>
+                <td>{{ saleProduct.saled_quantity }}</td>
+                <td>{{ formatMoney(saleProduct.unitary_value) }}</td>
+                <td>{{ formatMoney(saleProduct.total_value) }}</td>
+              </tr>
             </tbody>
           </q-markup-table>
+          <q-btn 
+            v-if="type === 0" 
+            label="Enviar orçamento para PDV" 
+            color="black" 
+            class="q-my-md"
+            @click="$emit('pdv', saleSelected)" 
+          />
         </div>
       </div>
     </q-card-section>
@@ -385,6 +394,7 @@ import { date } from "quasar";
 
 export default {
   name: "BuscarVenda",
+  emits: ['pdv'],
   props: {
     idTerminal: {
       type: Number,
@@ -403,6 +413,7 @@ export default {
       inputDate: null,
       paymentMethodsOptions: [],
       sales: [],
+      saleSelected: null,
       notSale: false,
       selectedSalesProducts: {},
       date: {
@@ -483,6 +494,7 @@ export default {
     selectedSale(sale, index) {
       this.currentRowIndex = index;
       this.selectedSalesProducts = sale.saleProduct;
+      this.saleSelected = sale;
     },
 
     clearDate(type) {
