@@ -33,3 +33,11 @@ export const sales = params => {
     return http.get('sales')
   }
 };
+
+export const cancelar = id => {
+  if (id) {
+    return http.delete('sales/' + id)
+  } else {
+    return false
+  }
+};

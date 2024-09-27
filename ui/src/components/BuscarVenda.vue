@@ -247,6 +247,7 @@
                 <th>FORMA</th>
                 <th>TERMINAL</th>
                 <th>FILIAL</th>
+                <th></th>
               </tr>
             </thead>
 
@@ -310,6 +311,10 @@
               </td>
               <td id="filial">
                 {{ sale.terminal?.empresa?.nome_fantasia }}
+              </td>
+              <td>
+                <q-badge v-if="sale.deleted_at" color="negative" text-color="white" label="cancelada" />
+                <q-btn v-else label="cancelar venda" dense flat no-caps @click="cancelarVenda(sale.id)" />
               </td>
             </tbody>
           </q-markup-table>
@@ -391,6 +396,7 @@
 <script>
 import { PdvService } from "../services";
 import { date } from "quasar";
+import { Dialog, Notify } from 'quasar'
 
 export default {
   name: "BuscarVenda",
@@ -485,6 +491,22 @@ export default {
   },
 
   methods: {
+    async cancelarVenda (id) {
+      Dialog.create({
+        title: 'Cancelar venda!',
+        message: 'Deseja cancelar essa venda?',
+        cancel: true,
+        persistent: false
+      }).onOk(async () => {
+        const res = await PdvService.cancelar(id)
+
+        Notify.create({ message: 'Venda cancelada com sucesso!', color: 'positive' })
+
+        this.getVendas()
+
+        console.log(res)
+      })
+    },
     async getVendas() {
       const response = await PdvService.vendas(this.idTerminal, this.type);
 

@@ -1,8 +1,22 @@
 <template>
   <q-page padding>
-    <BuscarVenda :type="0" :id-terminal="6" />
+    <BuscarVenda :type="1" :id-terminal="6" @pdv="selectSale" />
   </q-page>
 </template>
+
+<script>
+export default {
+  setup () {
+    function selectSale (val) {
+      console.log('pdv', val)
+    }
+
+    return {
+      selectSale
+    }
+  }
+}
+</script>
 
 <style lang="sass" scoped>
 .directive-target
