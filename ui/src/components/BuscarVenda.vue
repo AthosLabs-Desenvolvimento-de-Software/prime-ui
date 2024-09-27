@@ -204,8 +204,19 @@
               color="grey-9"
               glossy
               label="PESQUISAR"
+              icon="search"
               class="full-width"
               @click="syncSalesCloudDataBase"
+            />
+          </div>
+          <div class="col-12 col-md-3 q-pa-xs">
+            <q-btn
+              color="red"
+              icon="download"
+              glossy
+              label="Baixar XML"
+              class="full-width"
+              @click="baixarTodosXML"
             />
           </div>
         </div>
@@ -247,6 +258,8 @@
                 <th>FORMA</th>
                 <th>TERMINAL</th>
                 <th>FILIAL</th>
+                <th>SAT N SERIE</th>
+                <th>XML</th>
                 <th></th>
               </tr>
             </thead>
@@ -311,6 +324,13 @@
               </td>
               <td id="filial">
                 {{ sale.terminal?.empresa?.nome_fantasia }}
+              </td>
+              <td>
+                {{ sale.sat_numero_serie }}
+              </td>
+              <td>
+                <q-btn v-if="sale.sat_xml" label="xml" icon="download" dense flat no-caps @click="baixarXML(sale.id, sale.sat_xml)" />
+                <q-badge v-else class="bg-negative">Não possui</q-badge>
               </td>
               <td>
                 <q-badge v-if="sale.deleted_at" color="negative" text-color="white" label="cancelada" />
@@ -491,6 +511,52 @@ export default {
   },
 
   methods: {
+    // Função para baixar o arquivo XML
+    downloadXML(filename, xmlContent) {
+      // Cria um blob a partir dos dados XML
+      const blob = new Blob([xmlContent], { type: 'application/xml' })
+      
+      // Cria um link temporário
+      const link = document.createElement('a')
+      
+      // Cria a URL do blob
+      const url = URL.createObjectURL(blob)
+      
+      // Define o atributo href para o link
+      link.href = url
+      
+      // Define o nome do arquivo que será baixado
+      link.download = filename
+      
+      // Adiciona o link temporário ao documento
+      document.body.appendChild(link)
+      
+      // Aciona o download do arquivo
+      link.click()
+      
+      // Remove o link temporário do documento
+      document.body.removeChild(link)
+      
+      // Libera a URL do blob
+      URL.revokeObjectURL(url)
+    },
+    baixarXML (id, xml) {
+      this.downloadXML(`venda-${id}.xml`, xml)
+    },
+    baixarTodosXML () {
+      const vendasComXML = JSON.parse(JSON.stringify(this.sales.filter(e => e.sat_xml !== null)))
+
+      const xml = vendasComXML.map(e => {
+        return {
+          sat_xml: e.sat_xml,
+          id: e.id
+        }
+      })
+
+      xml.forEach(e => {
+        this.downloadXML(`venda-${e.id}.xml`, e.sat_xml)
+      })
+    },
     async cancelarVenda (id) {
       Dialog.create({
         title: 'Cancelar venda!',
