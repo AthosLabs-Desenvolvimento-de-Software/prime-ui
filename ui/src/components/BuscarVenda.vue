@@ -333,8 +333,29 @@
                   <q-badge v-else class="bg-negative">Não possui</q-badge>
                 </td>
                 <td>
-                  <q-badge v-if="sale.deleted_at" color="negative" text-color="white" label="cancelada" />
-                  <q-btn v-else label="cancelar venda" dense flat no-caps @click="cancelarVenda(sale?.id, sale?.sat_xml_path)" />
+                  <q-btn-dropdown color="orange" label="Ações" dense icon="settings" size="sm">
+                    <q-list>
+                      <q-item clickable v-close-popup>
+                        <q-item-section v-if="sale.deleted_at">
+                          <q-item-label><q-badge color="negative" text-color="white" label="cancelada" /></q-item-label>
+                        </q-item-section>
+                        <q-item-section v-else @click="cancelarVenda(sale?.id, sale?.sat_xml_path)">
+                          <q-item-label><q-icon name="delete" /> Cancelar venda</q-item-label>
+                        </q-item-section>
+                      </q-item>
+
+                      <q-item v-if="sale?.sat_xml_path" clickable v-close-popup @click="reimprimirCfe(sale?.sat_xml_path)">
+                        <q-item-section>
+                          <q-item-label><q-icon name="print" /> Reemprimir CFe</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-else clickable v-close-popup @click="reimprimirVenda(sale)">
+                        <q-item-section>
+                          <q-item-label><q-icon name="print" /> Reemprimir Venda</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
                 </td>
               </tr>
             </tbody>
@@ -423,7 +444,7 @@ import { Dialog, Notify, Loading } from 'quasar'
 
 export default {
   name: "BuscarVenda",
-  emits: ['pdv', 'cancelarCFe'],
+  emits: ['pdv', 'cancelarCFe', 'reimprimirCfe', 'reimprimirVenda'],
   props: {
     idTerminal: {
       type: Number,
@@ -519,6 +540,12 @@ export default {
   },
 
   methods: {
+    reimprimirVenda (sale) {
+      this.$emit('reimprimirVenda', sale)
+    },
+    reimprimirCfe (path) {
+      this.$emit('reimprimirCfe', path)
+    },
     // Função para baixar o arquivo XML
     downloadXML(filename, xmlContent) {
       // Cria um blob a partir dos dados XML
