@@ -1,6 +1,9 @@
 import http from './index.js';
 
-export const check = (data) => {
+export const check = (data, api) => {
+  if (api) {
+    http.defaults.baseURL = api
+  }
   return http.get('pdv/check', {
     params: {
       empresa_id: data.empresa_id,
@@ -10,7 +13,10 @@ export const check = (data) => {
   });
 };
 
-export const vincular = (data) => {
+export const vincular = (data, api) => {
+  if (api) {
+    http.defaults.baseURL = api
+  }
   return http.get('pdv/vincular', {
     params: {
       id: data.id,
@@ -20,11 +26,17 @@ export const vincular = (data) => {
   });
 };
 
-export const vendas = (terminalId, type) => {
+export const vendas = (terminalId, type, api) => {
+  if (api) {
+    http.defaults.baseURL = api
+  }
   return http.get(`pdv/vendas?terminal_id=${terminalId}&type=${type}`);
 };
 
-export const sales = params => {
+export const sales = (params, api) => {
+  if (api) {
+    http.defaults.baseURL = api
+  }
   if (params) {
     return http.get('sales', {
       params: { ...params }
@@ -34,7 +46,10 @@ export const sales = params => {
   }
 };
 
-export const cancelar = id => {
+export const cancelar = (id, api) => {
+  if (api) {
+    http.defaults.baseURL = api
+  }
   if (id) {
     return http.delete('sales/' + id)
   } else {

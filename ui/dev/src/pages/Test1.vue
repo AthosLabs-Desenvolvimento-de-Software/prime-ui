@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <BuscarVenda :type="1" :id-terminal="6" @pdv="selectSale" />
+    <BuscarVenda :type="1" :id-terminal="6" :api="api" @pdv="selectSale" />
   </q-page>
 </template>
 
@@ -12,7 +12,8 @@ export default {
     }
 
     return {
-      selectSale
+      selectSale,
+      api: process.env.API
     }
   }
 }

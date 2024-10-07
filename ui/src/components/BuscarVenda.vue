@@ -264,78 +264,79 @@
               </tr>
             </thead>
 
-            <tbody
-              v-for="(sale, index) in sales"
-              :key="index"
-              :class="[
-                { 'bg-grey-9 text-white': index === currentRowIndex },
-                'text-center cursor-pointer',
-              ]"
-              @click="selectedSale(sale, index)"
-            >
-              <td id="arrow">
-                <q-icon
-                  v-if="index === currentRowIndex"
-                  name="keyboard_arrow_right"
-                />
-              </td>
-              <td id="numero-de-venda">
-                {{ sale.code || 'N/A' }}
-              </td>
-              <td id="coo">
-                <!-- TODO: ? -->
-              </td>
-              <td id="coo-canc.">
-                <!-- TODO: ? -->
-              </td>
-              <td id="cliente">
-                {{ sale?.cliente?.nome_fantasia }}
-              </td>
-              <td id="vendedor">
-                {{ sale.vendedor?.nome }}
-              </td>
-              <td id="usuario">
-                {{ sale.userCreated.funcionario?.nome }}
-              </td>
-              <td id="data">
-                {{ formatDateCreatedAt(sale.created_at) }}
-              </td>
-              <td id="hora">
-                {{ formatTimeCreatedAt(sale.created_at) }}
-              </td>
-              <td id="valor">
-                {{ formatMoney(sale.total_value) }}
-              </td>
-              <td id="porcentagem-desconto">
-                {{ sale.saleProduct?.total_descount_value }}
-              </td>
-              <td id="troco">
-                <!-- TODO: achar troco -->
-              </td>
-              <td id="valor-final">
-                {{ formatMoney(sale.total_value) }}
-              </td>
-              <td id="forma">
-                {{ sale.saleMethodPayment[0]?.methodPayment?.tipo?.nome }}
-                <!-- TODO: se houver mais de um método de pagamento não vai aparecer -->
-              </td>
-              <td id="terminal">
-                {{ sale.terminal?.numero }} / {{ sale.terminal?.nome }}
-              </td>
-              <td id="filial">
-                {{ sale.terminal?.empresa?.nome_fantasia }}
-              </td>
-              <td>
-                {{ sale.sat_numero_serie }}
-              </td>
-              <td>
-                <q-btn v-if="sale.sat_xml" label="xml" icon="download" dense flat no-caps @click="baixarXML(sale.id, sale.sat_xml)" />
-                <q-badge v-else class="bg-negative">Não possui</q-badge>
-              </td>
-              <td>
-                <q-badge v-if="sale.deleted_at" color="negative" text-color="white" label="cancelada" />
-                <q-btn v-else label="cancelar venda" dense flat no-caps @click="cancelarVenda(sale.id)" />
-              </td>
+            <tbody>
+              <tr 
+                v-for="(sale, index) in sales"
+                :key="index"
+                :class="[
+                  { 'bg-grey-9 text-white': index === currentRowIndex }, 'text-center cursor-pointer',
+                ]"
+                @click="selectedSale(sale, index)"
+              >
+                <td id="arrow">
+                  <q-icon
+                    v-if="index === currentRowIndex"
+                    name="keyboard_arrow_right"
+                  />
+                </td>
+                <td id="numero-de-venda">
+                  {{ sale.code || 'N/A' }}
+                </td>
+                <td id="coo">
+                  <!-- TODO: ? -->
+                </td>
+                <td id="coo-canc.">
+                  <!-- TODO: ? -->
+                </td>
+                <td id="cliente">
+                  {{ sale?.cliente?.nome_fantasia }}
+                </td>
+                <td id="vendedor">
+                  {{ sale.vendedor?.nome }}
+                </td>
+                <td id="usuario">
+                  {{ sale.userCreated.funcionario?.nome }}
+                </td>
+                <td id="data">
+                  {{ formatDateCreatedAt(sale.created_at) }}
+                </td>
+                <td id="hora">
+                  {{ formatTimeCreatedAt(sale.created_at) }}
+                </td>
+                <td id="valor">
+                  {{ formatMoney(sale.total_value) }}
+                </td>
+                <td id="porcentagem-desconto">
+                  {{ sale.saleProduct?.total_descount_value }}
+                </td>
+                <td id="troco">
+                  <!-- TODO: achar troco -->
+                </td>
+                <td id="valor-final">
+                  {{ formatMoney(sale.total_value) }}
+                </td>
+                <td id="forma">
+                  {{ sale.saleMethodPayment[0]?.methodPayment?.tipo?.nome }}
+                  <!-- TODO: se houver mais de um método de pagamento não vai aparecer -->
+                </td>
+                <td id="terminal">
+                  {{ sale.terminal?.numero }} / {{ sale.terminal?.nome }}
+                </td>
+                <td id="filial">
+                  {{ sale.terminal?.empresa?.nome_fantasia }}
+                </td>
+                <td>
+                  {{ sale?.sat_numero_serie }}
+                </td>
+                <td>
+                  <q-btn v-if="sale?.sat_xml" label="xml" icon="download" dense flat no-caps @click="baixarXML(sale?.id, sale?.sat_xml)" />
+                  <q-badge v-else class="bg-negative">Não possui</q-badge>
+                </td>
+                <td>
+                  <q-badge v-if="sale.deleted_at" color="negative" text-color="white" label="cancelada" />
+                  <q-btn v-else label="cancelar venda" dense flat no-caps @click="cancelarVenda(sale?.id, sale?.sat_xml_path)" />
+                </td>
+              </tr>
             </tbody>
           </q-markup-table>
         </div>
@@ -367,12 +368,14 @@
         >
           <q-markup-table square separator="cell" dense flat>
             <thead :class="[type === 1 ? 'bg-orange-9' : 'bg-warning', 'text-white text-bold']">
-              <th>CÓDIGO</th>
-              <th>TROCA</th>
-              <th>DESCRIÇÃO DO PRODUTO</th>
-              <th>QUANTIDADE</th>
-              <th>VALOR UNIT.</th>
-              <th>VALOR TOTAL</th>
+              <tr>
+                <th>CÓDIGO</th>
+                <th>TROCA</th>
+                <th>DESCRIÇÃO DO PRODUTO</th>
+                <th>QUANTIDADE</th>
+                <th>VALOR UNIT.</th>
+                <th>VALOR TOTAL</th>
+              </tr>
             </thead>
 
             <tbody class="text-center">
@@ -416,11 +419,11 @@
 <script>
 import { PdvService } from "../services";
 import { date } from "quasar";
-import { Dialog, Notify } from 'quasar'
+import { Dialog, Notify, Loading } from 'quasar'
 
 export default {
   name: "BuscarVenda",
-  emits: ['pdv'],
+  emits: ['pdv', 'cancelarCFe'],
   props: {
     idTerminal: {
       type: Number,
@@ -430,6 +433,11 @@ export default {
     type: {
       type: Number,
       default: 1,
+      required: false
+    },
+    api: {
+      type: String,
+      default: null,
       required: false
     }
   },
@@ -557,14 +565,18 @@ export default {
         this.downloadXML(`venda-${e.id}.xml`, e.sat_xml)
       })
     },
-    async cancelarVenda (id) {
+    async cancelarVenda (id, xml) {
       Dialog.create({
         title: 'Cancelar venda!',
         message: 'Deseja cancelar essa venda?',
         cancel: true,
         persistent: false
       }).onOk(async () => {
-        const res = await PdvService.cancelar(id)
+        const res = await PdvService.cancelar(id, this.api)
+
+        if (xml) {
+          this.$emit('cancelarCFe', xml)
+        }
 
         Notify.create({ message: 'Venda cancelada com sucesso!', color: 'positive' })
 
@@ -574,7 +586,9 @@ export default {
       })
     },
     async getVendas() {
-      const response = await PdvService.vendas(this.idTerminal, this.type);
+      Loading.show({ message: 'Carregando dados do servidor!' })
+      const response = await PdvService.vendas(this.idTerminal, this.type, this.api);
+      Loading.hide()
 
       this.sales = response.data;
     },
@@ -749,6 +763,7 @@ export default {
     },
 
     async syncSalesCloudDataBase () {
+      Loading.show({ message: 'Carregando dados do servidor!' })
       const params = {
         idTerminal: this.idTerminal,
         startIn: this.formatarData(this.date.from),
@@ -758,9 +773,10 @@ export default {
         paymentMethods: this.customFilter.paymentMethods.value,
         type: this.type
       }
-      const response = await PdvService.sales(params)
+      const response = await PdvService.sales(params, this.api)
 
       this.sales = response.data
+      Loading.hide()
     },
   }
 };
