@@ -286,7 +286,7 @@
                   {{ sale.coo }}
                 </td>
                 <td id="coo-canc.">
-                  <!-- TODO: ? -->
+                  {{ sale.coo_cancelamento }}
                 </td>
                 <td id="cliente">
                   {{ sale?.cliente?.nome_fantasia }}
