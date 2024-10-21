@@ -283,7 +283,7 @@
                   {{ sale.code || 'N/A' }}
                 </td>
                 <td id="coo">
-                  <!-- TODO: ? -->
+                  {{ sale.coo }}
                 </td>
                 <td id="coo-canc.">
                   <!-- TODO: ? -->
