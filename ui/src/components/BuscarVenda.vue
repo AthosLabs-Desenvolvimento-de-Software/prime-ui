@@ -252,7 +252,7 @@
                 <th>DATA</th>
                 <th>HORA</th>
                 <th>VALOR</th>
-                <th>% DESCONTO</th>
+                <th>DESCONTO</th>
                 <th>TROCO</th>
                 <th>VALOR FINAL</th>
                 <th>FORMA</th>
@@ -307,7 +307,7 @@
                   {{ formatMoney(sale.total_value) }}
                 </td>
                 <td id="porcentagem-desconto">
-                  {{ sale.saleProduct?.total_descount_value }}
+                  {{ sale?.total_descount_value }}
                 </td>
                 <td id="troco">
                   <!-- TODO: achar troco -->
