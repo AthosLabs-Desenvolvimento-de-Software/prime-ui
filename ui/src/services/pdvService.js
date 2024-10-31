@@ -46,12 +46,14 @@ export const sales = (params, api) => {
   }
 };
 
-export const cancelar = (id, api) => {
+export const cancelar = (id, api, estoque) => {
   if (api) {
     http.defaults.baseURL = api
   }
   if (id) {
-    return http.delete('sales/' + id)
+    return http.delete(`sales/${id}`, { 
+      params: { estoque } 
+    })
   } else {
     return false
   }
