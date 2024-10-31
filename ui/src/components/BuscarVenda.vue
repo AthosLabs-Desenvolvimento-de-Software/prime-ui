@@ -255,6 +255,7 @@
                 <th>DESCONTO</th>
                 <th>TROCO</th>
                 <th>VALOR FINAL</th>
+                <th>COMISSÃO VENDEDOR</th>
                 <th>FORMA</th>
                 <th>TERMINAL</th>
                 <th>FILIAL</th>
@@ -314,6 +315,9 @@
                 </td>
                 <td id="valor-final">
                   {{ formatMoney(sale.total_value) }}
+                </td>
+                <td id="commission_seller">
+                  {{ sale.commission_value }}
                 </td>
                 <td id="forma">
                   {{ sale.saleMethodPayment[0]?.methodPayment?.tipo?.nome }}
@@ -645,8 +649,12 @@ export default {
       Loading.show({ message: 'Carregando dados do servidor!' })
       const response = await PdvService.vendas(this.idTerminal, this.type, this.api);
       Loading.hide()
-
-      this.sales = response.data;
+      this.sales = response.data.map(item => {  
+        return {
+          ...item,
+          commission_value: item.comissao_porcentagem ? this.formatMoney((Number(item.comissao_porcentagem) / 100) * Number(item.total_value)) : null
+        }
+      })
     },
 
     selectedSale(sale, index) {
@@ -831,7 +839,13 @@ export default {
       }
       const response = await PdvService.sales(params, this.api)
 
-      this.sales = response.data
+      this.sales = response.data.map(item => {  
+        return {
+          ...item,
+          commission_value: item.comissao_porcentagem ? this.formatMoney((Number(item.comissao_porcentagem) / 100) * Number(item.total_value)) : null
+        }
+      })
+
       Loading.hide()
     },
   }
