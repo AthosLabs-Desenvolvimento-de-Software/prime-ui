@@ -620,7 +620,7 @@ export default {
             this.cancelarVenda(id, this.api, false)
           })
         } else {
-          this.cancelarVenda(id, this.api, false)
+          this.cancelarVenda(id, this.api, true)
         }
 
       })
