@@ -627,7 +627,6 @@ export default {
     },
 
     async cancelarVenda (id, api, estoque) {
-      console.log(id, api, estoque)
       const res = await PdvService.cancelar(id, api, estoque)
 
       if (xml) {
