@@ -339,7 +339,7 @@
                         <q-item-section v-if="sale.deleted_at">
                           <q-item-label><q-badge color="negative" text-color="white" label="cancelada" /></q-item-label>
                         </q-item-section>
-                        <q-item-section v-else @click="cancelarVenda(sale?.id, sale?.sat_xml_path)">
+                        <q-item-section v-else @click="processarCancelamentoVenda(sale?.id, sale?.sat_xml_path)">
                           <q-item-label><q-icon name="delete" /> Cancelar venda</q-item-label>
                         </q-item-section>
                       </q-item>
@@ -592,26 +592,56 @@ export default {
         this.downloadXML(`venda-${e.id}.xml`, e.sat_xml)
       })
     },
-    async cancelarVenda (id, xml) {
+    async processarCancelamentoVenda (id, xml) {
       Dialog.create({
-        title: 'Cancelar venda!',
+        title: 'Cancelar venda!', 
         message: 'Deseja cancelar essa venda?',
         cancel: true,
         persistent: false
       }).onOk(async () => {
-        const res = await PdvService.cancelar(id, this.api)
-
-        if (xml) {
-          this.$emit('cancelarCFe', xml)
+        const empresaPdvConfig = JSON.parse(localStorage.getItem('EMPRESA_PDV_CONFIG'))
+        
+        if (empresaPdvConfig && empresaPdvConfig.solicitar_confirmacao_exclusao_estoque) {
+          await Dialog.create({
+            title: 'Retornar estoque',
+            message: 'Deseja retornar o estoque dos produtos?',
+            cancel: {
+              label: 'Não',
+              flat: true
+            },
+            ok: {
+              label: 'Sim',
+              flat: true
+            },
+            persistent: true
+          }).onOk(() => {
+            this.cancelarVenda(id, this.api, true)
+          }).onCancel(() => {
+            this.cancelarVenda(id, this.api, false)
+          })
+        } else {
+          this.cancelarVenda(id, this.api, false)
         }
 
-        Notify.create({ message: 'Venda cancelada com sucesso!', color: 'positive' })
-
-        this.getVendas()
-
-        console.log(res)
       })
     },
+
+    async cancelarVenda (id, api, estoque) {
+      console.log(id, api, estoque)
+      const res = await PdvService.cancelar(id, api, estoque)
+
+      if (xml) {
+        this.$emit('cancelarCFe', xml)
+      }
+
+      Notify.create({ 
+        message: 'Venda cancelada com sucesso!', 
+        color: 'positive' 
+      })
+
+      this.getVendas()
+    },
+
     async getVendas() {
       Loading.show({ message: 'Carregando dados do servidor!' })
       const response = await PdvService.vendas(this.idTerminal, this.type, this.api);
